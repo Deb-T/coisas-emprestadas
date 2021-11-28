@@ -2,7 +2,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
 }
@@ -39,5 +40,5 @@ body {
 
 .main {
   display: flex;
-  justify-content: center;  
+  justify-content: center;
 }
