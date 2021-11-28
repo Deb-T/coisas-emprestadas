@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+
+.header {
+  height: 25%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+.left {
+  height: 75%;
+  width: 25%;
+}
+
+.right {
+  height: 75%;
+  width: 75%;
+}
+
+.main {
+  display: flex;
+  justify-content: center;  
+}
