@@ -12,7 +12,7 @@
 	$qtdeRegistros = mysqli_num_rows($res);
 	
 	//Encontrou login e senha compatíveis
-	if($qtdeRegistros > 0){
+	if ($qtdeRegistros > 0) {
 		
 		//Inicia a sessão
 		session_start();
@@ -23,6 +23,7 @@
 		//Armazena informaçoes do usuário na Sessão
 		$_SESSION['id'] = $row['id'];
 		$_SESSION['nome'] = $row['nome'];
+		$_SESSION['email'] = $row['email'];
 		
 		header("Location: inicio.php");
 	}

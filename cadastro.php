@@ -1,25 +1,25 @@
 <?php 
 
-	include "includes/autentica.php"; 
-
 	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
-		$id = $_SESSION['id'];
 		$nome = $_POST["nome"];
 		$email = $_POST["email"];
-		$sucesso = null;
-	
-		include "includes/conecta.php";
-		
-		$sql = "UPDATE usuarios SET nome = '$nome', email = '$email' WHERE id = $id;";
-		$res = mysqli_query($conn, $sql);
-		
-		if ($res) {
-			$sucesso = true;
-			$_SESSION['nome'] = $nome;
-			$_SESSION['email'] = $email;
+        $senha = $_POST["senha"];
+        $confirmacao = $_POST["confirmacao"];
+        $error = null;
 
-			header("Location: inicio.php");
-		}
+        if ($senha != $confirmacao) {
+            $error = "Confirmação da senha incorreta!";
+        } else {
+            include "includes/conecta.php";
+		
+            $sql = "INSERT INTO usuarios (`nome`, `email`, `senha`, `ativo`) VALUES ('$nome', '$email', '$senha', 'A');";
+            $res = mysqli_query($conn, $sql);
+            
+            if ($res) {
+                header("Location: login.php");
+            }
+        }	
+		
 	}
 
 ?>
@@ -33,28 +33,42 @@
 </head>
 <body>
 	<div class="header">
-		<h2 style="text-align: center;"> Meu Perfil </h2>
+		<h2 style="text-align: center;"> Cadastro de Usuários </h2>
 </div>
 	
 	<div class="main">	
 		<main>
-			<form action="perfil.php" method="post" style="position" >
+			<form action="cadastro.php" method="post" style="position" >
 				<table>
 					<tr>
 						<td><label for="nome"> Nome </label></td>
-						<td><input type="text" name="nome" value="<?php echo $_SESSION['nome'] ?>" /></td>
+						<td><input type="text" name="nome" /></td>
 					</tr>
 					<tr>
 						<td><label for="email"> Email </label></td>
-						<td><input type="email" name="email" value="<?php echo $_SESSION['email'] ?>" /></td>
+						<td><input type="email" name="email" /></td>
+					</tr>
+                    <tr>
+						<td><label for="senha"> Senha </label></td>
+						<td><input type="password" name="senha" /></td>
+					</tr>
+                    <tr>
+						<td><label for="confirmacao"> Confirmação </label></td>
+						<td><input type="password" name="confirmacao" /></td>
 					</tr>
 					<tr>
-						<td><button type="submit" class="btn btn-primary">SALVAR</button></td>
+						<td><button type="submit" class="btn btn-primary">CADASTRAR</button></td>
 					</tr>
 				</table>
 			</form>
 		</main>
 	</div>
+
+    <?php
+        if (isset($error)) {
+            echo "<div class=\"alert alert-danger\" role=\"alert\">". $error ."</div>";
+        }
+    ?>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

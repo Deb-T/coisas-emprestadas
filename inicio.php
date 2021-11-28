@@ -1,3 +1,21 @@
+<?php 
+
+	include "includes/autentica.php";
+	include "includes/conecta.php";
+
+	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
+		$nome = $_POST["nome"];
+		$descricao = $_POST["descricao"];
+	
+		
+		$sql = "INSERT INTO `itens` (`nome`, `descricao`, `emprestado`) VALUES ('$nome','$descricao','N');";
+		$res = mysqli_query($conn, $sql);
+		if (!$res) {
+			$error = "Falha ao cadastrar novo item. Tente novamente...";
+		}
+	}
+	
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,14 +31,12 @@
 	</div>
 
 	<div class="column left">
-			<ul>
-				<li> Nome </li>
-				<li> Email </li>
-				<li> Fone </li>
-				<li> Local </li>
-			</ul>
-			<a href="perfil.php"><button> Editar meu perfil </button></a>
-			<a href="logout.php"><button> Sair </button></a>
+		<ul>
+			<li>Nome: <?php echo $_SESSION['nome']; ?></li>
+			<li>Email: <?php echo $_SESSION['email']; ?></li>
+		</ul>
+		<a href="perfil.php"><button> Editar meu perfil </button></a>
+		<a href="logout.php"><button> Sair </button></a>
 	</div>
 
 	<!-- Lista de itens -->
@@ -31,40 +47,41 @@
 					<th scope="col"> Item </th>
 					<th scope="col"> Descrição </th>
 					<th scope="col"> Status </th>
+					<th scope="col">&nbsp;</th>
 				</tr>
 			</thead>
-			<tbody>	
-			<tr>
-				<th scope="row"> Barraca de camping </th>
-				<td> Barraca tamanho casal na cor verde para camping. Completa, fácil de montar, sem defeitos.</td>
-				<td> Indisponível </td>
-				<td> </td>
-			</tr>
-			<tr>
-				<th scope="row"> Livro Dom Casmurro </th>
-				<td> Livro sem rasuras, apenas marcas causadas pelo manuseio. </td>
-				<td> Indisponível </td>
-			</tr>
-			<tr>
-				<th scope="row"> Churrasqueira portátil </th>
-				<td> Churrasqueira de mesa, pequena (30x80), fácil de carregar. </td>
-				<td> Disponível </td>
-			</tr>
-			<tr>
-				<th scope="row"> Piscina 5000L </th>
-				<td> Piscina de 5000L sem defeitos. Acompanha bomba de ar para encher as laterais. </td>
-				<td> Indisponível </td>
-			</tr>
-		</tbody>
-		</table>
+			<tbody>
+				<?php
 
+					$sql = "SELECT nome, descricao, emprestado FROM itens";
+					$res = mysqli_query($conn, $sql);
+
+					//Se encontrou algum registro
+					if($res){
+						//Percorre os registros encontrados
+						while($row = mysqli_fetch_assoc($res)){
+							$status = ($row['emprestado'] == "S") ? "Indisponível" : "Disponível";
+							$emprestar = ($row['emprestado'] == "S") ? "" : "<button type=\"button\" class=\"btn btn-sm btn-primary\">emprestar</button>";
+							echo "<tr>
+									<th scope=\"row\">". $row['nome'] ."</th>
+									<td>". $row['descricao'] ."</td>
+									<td>". $status ."</td>
+									<td>". $emprestar ."</td>
+								</tr>";					
+						}
+					}
+
+				?>
+			</tbody>
+		</table>
+		
 		<!-- Cadastrando novo item -->
 		<h5><br/> Cadastrar novos itens <br/></h5>
-		<form>
+		<form action="inicio.php" method="POST">
 			<table><br/>
 				<tr>
-					<td><label for="item"> Item </label><td>
-					<td><input type="text" name="item" /></td>
+					<td><label for="nome"> Item </label><td>
+					<td><input type="text" name="nome" /></td>
 				</tr>
 				<tr>
 					<td><label for="descricao"> Descrição </label></td>
@@ -75,6 +92,12 @@
 				</tr>
 			</table>
 		</form>
+
+		<?php
+			if (isset($error)) {
+				echo "<div class=\"alert alert-danger\" role=\"alert\">". $error ."</div>";	
+			}
+		?>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
